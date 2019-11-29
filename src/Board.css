@@ -1,0 +1,13 @@
+.header {
+    text-align: center;
+    width: 2rem;
+}
+
+.header.first {
+    margin-left: 2rem;
+}
+
+.number-column {
+    text-align: center;
+    width: 2rem;
+}

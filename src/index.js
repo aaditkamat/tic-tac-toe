@@ -15,10 +15,11 @@ class Game extends Component {
                 hasWinner: false,
                 currentBoardValues: Range(0, NUM_OF_ROWS ** 2).map(() => '').toArray()
             }],
+            moves: [''],
             currentIndex: 0
         };
         this.getNewGameState = this.getNewGameState.bind(this);
-        this.showPlayerInfo = this.showPlayerInfo.bind(this);
+        this.renderPlayerInfo = this.renderPlayerInfo.bind(this);
         this.goToMove = this.goToMove.bind(this);
         this.updateGameState = this.updateGameState.bind(this);
     }
@@ -34,7 +35,7 @@ class Game extends Component {
         }
     }
 
-    getNewGameState(state, row, col, values,) {
+    getNewGameState(state, row, col, values) {
         const latest = state.history[state.currentIndex];
         const gameIsWon = checkRow(values, row, latest.currentPlayer) || checkCol(values, col, latest.currentPlayer) || checkLeftDiagonal(values, row, col, latest.currentPlayer) || checkRightDiagonal(values, row, col, latest.currentPlayer);
         if (gameIsWon && latest.hasWinner) {
@@ -55,17 +56,19 @@ class Game extends Component {
                     currentBoardValues: values
                 });
             }
-            return {history: newHistory, currentIndex: state.currentIndex + 1};
+            const newMoves = Range(0, state.currentIndex + 1).map(num => state.moves[num]).toArray();
+            newMoves.push(`(${row + 1}, ${col + 1})`);
+            return {history: newHistory, moves: newMoves, currentIndex: state.currentIndex + 1};
         }
     }
 
     goToMove(num) {
         this.setState(state => {
-            return { history: state.history, currentIndex: num }
+            return { history: state.history, moves: state.moves, currentIndex: num }
         });
     }
 
-    showPlayerInfo() {
+    renderPlayerInfo() {
         const latest = this.state.history[this.state.currentIndex];
         if (!latest.hasWinner) {
             return (
@@ -79,14 +82,13 @@ class Game extends Component {
 
     render() {
         const latest = this.state.history[this.state.currentIndex];
-        const noOfMoves = this.state.history.length;
         return (
             <div className="container" >
                 <div className="row">
-                    { this.showPlayerInfo() }
+                    { this.renderPlayerInfo() }
                 </div>  
                 <Board updateGameState={this.updateGameState} values={latest.currentBoardValues} /> 
-                <Actions noOfMoves={noOfMoves} goToMove={this.goToMove}/>     
+                <Actions moves={this.state.moves} goToMove={this.goToMove}/>     
             </div>
         );
     }

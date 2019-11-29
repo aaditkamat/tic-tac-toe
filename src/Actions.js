@@ -1,26 +1,39 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Range } from 'immutable';
+import Action from './Action';
 import './Actions.css';
 
-const Actions = (props) => (
-    <div className="row">
-        <ol>
-            { Range(0, props.noOfMoves).map(num => {
-                let moveLabel = `move #${num}`;
-                if (num === 0) {
-                    moveLabel = 'game start';
-                }
-                return (
-                    <li key={num.toString()} >
-                        <button onClick={() => props.goToMove(num)}>
-                            {`Go to ${moveLabel}`}
-                        </button>
-                    </li>
-                );
-              })
-            } 
-        </ol>
-    </div>
-);
+class Actions extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedIndex: -1
+        }
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick(num) {
+        this.setState({ selectedIndex: num });
+        this.props.goToMove(num);
+    }
+
+    render() {
+        return (
+            <div className="row">
+                <ol>
+                    { 
+                        Range(0, this.props.moves.length).map(num => {
+                            let moveLabel = `move #${num}: ${this.props.moves[num]}`;
+                            if (num === 0) {
+                                moveLabel = 'game start';
+                            }
+                            return <Action key={num.toString()} textisBold={num === this.state.selectedIndex} moveLabel={moveLabel} handleClick={() => this.handleClick(num)}/>;
+                        })
+                    } 
+                </ol>
+            </div>
+        );
+    }
+}
 
 export default Actions;
