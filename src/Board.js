@@ -1,6 +1,7 @@
 import React from 'react';
 import { Range } from 'immutable';
 import Box from './Box';
+import { calculateIndex } from './extra';
 
 class Board extends React.Component {
     constructor(props) {
@@ -11,12 +12,15 @@ class Board extends React.Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
-    handleClick(index) {
-        this.setState(state => {
-            const values = Range(0, 9).map(num => num === index ? this.props.currentPlayer : state.values[num]).toArray();
-            return { values: values };
-        });
-        this.props.updatePlayer();
+    handleClick(row, col) {
+        const index = calculateIndex(row, col);
+        if (this.state.values[index] === '' && !this.props.hasWinner) {
+            this.setState(state => {
+                const values = Range(0, 9).map(num => num === index ? this.props.currentPlayer : state.values[num]).toArray();
+                this.props.updateGameState(row, col, values);
+                return { values: values };
+            });
+        }
     }
 
     render() {
@@ -28,8 +32,8 @@ class Board extends React.Component {
                         <div key={row.toString()} className="row">
                         {
                             Range(0, 3).map(col => {
-                                const index = 3 * row + col;
-                                return <Box key={index.toString()} index={index} onClick={this.handleClick} currentPlayer={this.state.values[index]}/>;
+                                const index = calculateIndex(row, col);
+                                return <Box key={index.toString()} row={row} col={col} onClick={this.handleClick} currentPlayer={this.state.values[index]}/>;
                             })
                         }
                         </div>
