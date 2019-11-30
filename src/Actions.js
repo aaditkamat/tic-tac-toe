@@ -10,6 +10,7 @@ class Actions extends Component {
             selectedIndex: -1
         }
         this.handleClick = this.handleClick.bind(this);
+        this.renderActions = this.renderActions.bind(this);
     }
 
     handleClick(num) {
@@ -17,18 +18,28 @@ class Actions extends Component {
         this.props.goToMove(num);
     }
 
+    renderActions() {
+        let start = 0, end = this.props.moves.length, step = 1;
+        if (!this.props.movesAreSortedInAscending) {
+            start = this.props.moves.length - 1;
+            end = -1;
+            step =-1;
+        }
+        return Range(start, end, step).map(num => {
+            let moveLabel = `move #${num}: ${this.props.moves[num]}`;
+            if (this.props.moves[num] === '') {
+                moveLabel = 'game start';
+            }
+            return <Action key={num.toString()} textisBold={num === this.state.selectedIndex} moveLabel={moveLabel} handleClick={() => this.handleClick(num)}/>;
+        });
+    }
+
     render() {
         return (
-            <div className="row">
+            <div className="col">
                 <ol>
                     { 
-                        Range(0, this.props.moves.length).map(num => {
-                            let moveLabel = `move #${num}: ${this.props.moves[num]}`;
-                            if (num === 0) {
-                                moveLabel = 'game start';
-                            }
-                            return <Action key={num.toString()} textisBold={num === this.state.selectedIndex} moveLabel={moveLabel} handleClick={() => this.handleClick(num)}/>;
-                        })
+                        this.renderActions()
                     } 
                 </ol>
             </div>

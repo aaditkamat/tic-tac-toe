@@ -3,5 +3,5 @@
     font-weight: bold;
     height: 2rem;
     width: 2rem;
-    box-shadow: 1px 1px 1px 1px gray;
+    border: 1px solid gray;
 }

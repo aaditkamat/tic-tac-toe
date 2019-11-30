@@ -1,7 +1,7 @@
 import React from 'react';
 import { Range } from 'immutable';
 import Box from './Box';
-import { calculateIndex } from './extra'; 
+import { calculateIndex, findInArray } from './extra'; 
 import './Board.css';
 
 class Board extends React.Component {
@@ -17,7 +17,7 @@ class Board extends React.Component {
             <>
             <div className="row">
                 <div className="header first">1</div>
-                {Range(2, 4).map(num => <div className="header">{num}</div>)}
+                { Range(2, 4).map(num => <div className="header">{num}</div>) }
             </div>
             {
                 Range(0, 3).map(row => { 
@@ -27,7 +27,7 @@ class Board extends React.Component {
                         {
                             Range(0, 3).map(col => {
                                 const index = calculateIndex(row, col);
-                                return <Box key={index.toString()} row={row} col={col} handleClick={this.props.updateGameState} currentPlayer={this.props.values[index]}/>;
+                                return <Box key={index.toString()} isHighlighted={findInArray(index, this.props.highlightedSquares)} row={row} col={col} handleClick={this.props.updateGameState} currentPlayer={this.props.values[index]}/>;
                             })
                         }
                         </div>
