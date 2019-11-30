@@ -70,7 +70,7 @@ export const findInArray = (element, array) => {
     return array.indexOf(element) !== -1
 }
 
-export const copyArray = (array) => {
+const copyArray = (array) => {
     return List(array).toArray();
 }
 
