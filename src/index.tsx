@@ -4,11 +4,11 @@ import { List } from 'immutable';
 import Actions from './Actions';
 import Board from './Board';
 import Toggle from './Toggle';  
-import { calculateIndex, findHighlightedSquares, NUM_OF_ROWS, updateArray, fillArray, sliceArray } from './extra'; 
+import { calculateIndex, findHighlightedSquares, NUM_OF_ROWS, updateArray, fillArray, sliceArray, findInArray } from './extra'; 
 import './index.css';
 
-class Game extends Component {
-    constructor(props) {
+class Game extends Component<{}, Game.State>{
+    constructor(props: {}) {
         super(props);
         this.state = {
             history: [{
@@ -27,25 +27,27 @@ class Game extends Component {
         this.sortMoves = this.sortMoves.bind(this);
     }
 
-    updateGameState(row, col) {
+    
+    updateGameState(row: number, col: number) {
         const index = calculateIndex(row, col);
-        const latest = this.state.history[this.state.currentIndex];
+        const latest: Game.History = this.state.history[this.state.currentIndex];
         if (latest.currentBoardValues[index] === '' && latest.highlightedSquares.length === 0) {
-            this.setState(state => {
+            //
+            this.setState(prevState => {
                 const newValues = updateArray(latest.currentBoardValues, index, latest.currentPlayer);
-                return this.getNewGameState(state, row, col, newValues);
+                return this.getNewGameState(prevState, row, col, newValues);
             });
         }
     }
 
-    getNewGameState(state, row, col, values) {
-        const latest = state.history[state.currentIndex];
-        const currentPlayer = latest.currentPlayer;
+    getNewGameState(state: Game.State, row: number, col: number, values: Array<string>) {
+        const latest: Game.History = state.history[state.currentIndex];
+        const currentPlayer: string = latest.currentPlayer;
         if (latest.highlightedSquares.length !== 0) {
             return state;
         } else {
-            const newHistory = sliceArray(0, state.currentIndex, state.history);
-            const highlightedSquares = findHighlightedSquares(row, col, values, currentPlayer);
+            const newHistory: Array<Game.History> = sliceArray(0, state.currentIndex, state.history) as Array<Game.History>;
+            const highlightedSquares: Array<number> = findHighlightedSquares(row, col, values, currentPlayer);
             if (highlightedSquares.length !== 0) {
                 newHistory.push({
                     currentPlayer: currentPlayer,
@@ -53,39 +55,40 @@ class Game extends Component {
                     currentBoardValues: values
                 });
             } else {
-                const newPlayer = currentPlayer === 'X' ? 'O': 'X';
+                const newPlayer: string = currentPlayer === 'X' ? 'O': 'X';
                 newHistory.push({ 
                     currentPlayer: newPlayer, 
                     highlightedSquares: highlightedSquares,
                     currentBoardValues: values,
                 });
             }
-            const newMoves = sliceArray(0, state.currentIndex, state.moves);
+            const newMoves: Array<string> = sliceArray(0, state.currentIndex, state.moves) as Array<string>;
             newMoves.push(`(${row + 1}, ${col + 1})`);
             return {history: newHistory, moves: newMoves, currentIndex: state.currentIndex + 1};
         }
     }
 
-    goToMove(num) {
-        this.setState(state => {
-            return { history: state.history, moves: state.moves, currentIndex: num }
+    goToMove(num: number) {
+        this.setState((prevState: Game.State) => {
+            return { history: prevState.history, moves: prevState.moves, currentIndex: num }
         });
     }
 
     sortMoves() {
-        this.setState(state => {
+        this.setState((prevState: Game.State) => {
             return {
-                history: state.history,
-                moves: state.moves,
-                movesAreSortedInAscending: !state.movesAreSortedInAscending,
-                currentIndex: state.currentIndex
+                history: prevState.history,
+                moves: prevState.moves,
+                movesAreSortedInAscending: !prevState.movesAreSortedInAscending,
+                currentIndex: prevState.currentIndex
             }
         });
     }
 
     renderPlayerInfo() {
-        const latest = this.state.history[this.state.currentIndex];
-        if (List(latest.currentBoardValues).filter(x => x === '').toArray().length === 0 && latest.highlightedSquares.length === 0) {
+        const latest: Game.History = this.state.history[this.state.currentIndex];
+        findInArray('', latest.currentBoardValues)
+        if (!findInArray('', latest.currentBoardValues) && latest.highlightedSquares.length === 0) {
             return (
                 <div className="playerInfo">The game is a draw </div>
             );
@@ -101,7 +104,7 @@ class Game extends Component {
     }
 
     render() {
-        const latest = this.state.history[this.state.currentIndex];
+        const latest: Game.History = this.state.history[this.state.currentIndex];
         return (
             <div className="container" >
                 <div className="row">
