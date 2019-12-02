@@ -2,19 +2,24 @@
   "name": "tic-tac-toe",
   "version": "0.1.0",
   "private": true,
+  "types": "./src/global.d.ts",
   "dependencies": {
-    "boostrap": "^2.0.0",
-    "bootstrap": "^4.4.0",
+    "@types/node": "^12.12.14",
+    "@types/react": "^16.9.13",
+    "@types/react-dom": "^16.9.4",
     "immutable": "^4.0.0-rc.12",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-scripts": "3.2.0"
+    "react-scripts": "3.2.0",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "tslint -c tslint.json 'src/**/*.ts' 'src/**/*.tsx' 'types/**/*.ts'"
   },
   "eslintConfig": {
     "extends": "react-app"
