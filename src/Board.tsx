@@ -17,7 +17,7 @@ class Board extends React.Component<Board.Props> {
             <>
             <div className="row">
                 <div className="header first">1</div>
-                { Range(2, 4).map((num: number) => <div className="header">{num}</div>) }
+                { Range(2, 4).map((num: number) => <div key={num.toString()} className="header">{num}</div>) }
             </div>
             {
                 Range(0, 3).map((row: number) => {
