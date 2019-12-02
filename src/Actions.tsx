@@ -3,8 +3,8 @@ import React, { Component } from "react";
 import Action from "./Action";
 import "./Actions.css";
 
-class Actions extends Component<Action.Props, Action.State> {
-    constructor(props: Action.Props) {
+class Actions extends Component<Actions.Props, Actions.State> {
+    constructor(props: Actions.Props) {
         super(props);
         this.state = {
             selectedIndex: -1,
@@ -19,22 +19,22 @@ class Actions extends Component<Action.Props, Action.State> {
     }
 
     public renderActions() {
-        let start = 0;
-        let end = this.props.moves.length;
-        let step = 1;
+        let start: number = 0;
+        let end: number = this.props.moves.length;
+        let step: number = 1;
         if (!this.props.movesAreSortedInAscending) {
             start = this.props.moves.length - 1;
             end = -1;
-            step =-1;
+            step = -1;
         }
-        return Range(start, end, step).map(num => {
-            let moveLabel = `move #${num}: ${this.props.moves[num]}`;
+        return Range(start, end, step).map((num: number) => {
+            let moveLabel: string = `move #${num}: ${this.props.moves[num]}`;
             if (this.props.moves[num] === "") {
-                moveLabel = 'game start';
+                moveLabel = "game start";
             }
-            return <Action key={num.toString()} 
-                           textisBold={num === this.state.selectedIndex} 
-                           moveLabel={moveLabel} 
+            return <Action key={num.toString()}
+                           textisBold={num === this.state.selectedIndex}
+                           moveLabel={moveLabel}
                            handleClick={() => this.handleClick(num)} />;
         });
     }
@@ -43,9 +43,7 @@ class Actions extends Component<Action.Props, Action.State> {
         return (
             <div className="col">
                 <ol>
-                    { 
-                        this.renderActions()
-                    } 
+                    { this.renderActions() }
                 </ol>
             </div>
         );

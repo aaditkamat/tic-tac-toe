@@ -1,18 +1,19 @@
  declare namespace Game {
     interface History {
+        currentBoardValues: string[];
         currentPlayer: string;
         highlightedSquares: number[];
-        currentBoardValues: string[];
     }
     interface State {
+        currentIndex: number;
         history: History[];
         moves: string[];
         movesAreSortedInAscending: boolean;
-        currentIndex: number;
     }
 }
 
-declare namespace Action {
+
+declare namespace Actions {
     interface Props {
         moves: string[];
         goToMove: (num: number) => void;
@@ -20,6 +21,14 @@ declare namespace Action {
     }
     interface State {
         selectedIndex: number;
+    }
+}
+
+declare namespace Action {
+    interface Props {
+        handleClick: () => void,
+        textisBold: boolean,
+        moveLabel: string,
     }
 }
 

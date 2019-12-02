@@ -72,7 +72,7 @@ export const sliceArray = (start: number, end: number, array: string[] | Game.Hi
     return Range(start, end + 1).map((num: number) => array[num]).toArray();
 };
 
-export const findInArray = (element: number, array: number[] | string[]) => {
+export const findInArray = (element: number | string, array: number[] | string[]) => {
     return array.indexOf(element as never) !== -1;
 };
 

@@ -1,10 +1,14 @@
 import React, { CSSProperties } from "react";
 
-const Action = (props: any) => {
+const Action = (props: Action.Props) => {
+   const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+       event.preventDefault();
+       return props.handleClick();
+   };
    const renderFontChange = () => {
         const style: CSSProperties = props.textisBold === true ? {fontWeight: "bold"} : {};
         return (
-            <button onClick={props.handleClick} style={style} >
+            <button onClick={handleClick} style={style} >
                 {`Go to ${props.moveLabel}`}
             </button>
         );

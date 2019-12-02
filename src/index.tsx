@@ -1,24 +1,23 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { List } from 'immutable';
-import Actions from './Actions';
-import Board from './Board';
-import Toggle from './Toggle';  
-import { calculateIndex, findHighlightedSquares, NUM_OF_ROWS, updateArray, fillArray, sliceArray, findInArray } from './extra'; 
-import './index.css';
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import Actions from "./Actions";
+import Board from "./Board";
+import { calculateIndex, fillArray, findHighlightedSquares, findInArray, NUM_OF_ROWS, sliceArray, updateArray } from "./extra";
+import "./index.css";
+import Toggle from "./Toggle";
 
-class Game extends Component<{}, Game.State>{
+class Game extends Component<{}, Game.State> {
     constructor(props: {}) {
         super(props);
         this.state = {
-            history: [{
-                currentPlayer: 'X',
-                highlightedSquares: [],
-                currentBoardValues: fillArray(NUM_OF_ROWS ** 2, '')
-            }],
-            moves: fillArray(1, ''),
-            movesAreSortedInAscending: true,
             currentIndex: 0,
+            history: [{
+                currentBoardValues: fillArray(NUM_OF_ROWS ** 2, ""),
+                currentPlayer: "X",
+                highlightedSquares: [],
+            }],
+            moves: fillArray(1, ""),
+            movesAreSortedInAscending: true,
         };
         this.getNewGameState = this.getNewGameState.bind(this);
         this.renderPlayerInfo = this.renderPlayerInfo.bind(this);
@@ -27,68 +26,92 @@ class Game extends Component<{}, Game.State>{
         this.sortMoves = this.sortMoves.bind(this);
     }
 
-    
-    updateGameState(row: number, col: number) {
-        const index = calculateIndex(row, col);
+    public render() {
         const latest: Game.History = this.state.history[this.state.currentIndex];
-        if (latest.currentBoardValues[index] === '' && latest.highlightedSquares.length === 0) {
-            //
-            this.setState(prevState => {
-                const newValues = updateArray(latest.currentBoardValues, index, latest.currentPlayer);
+        return (
+            <div className="container" >
+                <div className="row">
+                    { this.renderPlayerInfo() }
+                </div>
+                <Board updateGameState={this.updateGameState}
+                       values={latest.currentBoardValues}
+                       highlightedSquares={latest.highlightedSquares} />
+                <div className="row">
+                    <Actions moves={this.state.moves}
+                             goToMove={this.goToMove}
+                             movesAreSortedInAscending={this.state.movesAreSortedInAscending} />
+                    <Toggle sortMoves={this.sortMoves}
+                            isAscending={this.state.movesAreSortedInAscending} />
+                </div>
+            </div>
+        );
+    }
+
+    public updateGameState(row: number, col: number) {
+        const index: number = calculateIndex(row, col);
+        const latest: Game.History = this.state.history[this.state.currentIndex];
+        if (latest.currentBoardValues[index] === "" && latest.highlightedSquares.length === 0) {
+            this.setState((prevState: Game.State) => {
+                const newValues: string[] = updateArray(latest.currentBoardValues, index, latest.currentPlayer);
                 return this.getNewGameState(prevState, row, col, newValues);
             });
         }
     }
 
-    getNewGameState(state: Game.State, row: number, col: number, values: Array<string>) {
+    public getNewGameState(state: Game.State, row: number, col: number, values: string[]) {
         const latest: Game.History = state.history[state.currentIndex];
         const currentPlayer: string = latest.currentPlayer;
         if (latest.highlightedSquares.length !== 0) {
             return state;
         } else {
-            const newHistory: Array<Game.History> = sliceArray(0, state.currentIndex, state.history) as Array<Game.History>;
-            const highlightedSquares: Array<number> = findHighlightedSquares(row, col, values, currentPlayer);
+            const newHistory: Game.History[] = sliceArray(0, state.currentIndex, state.history) as Game.History[];
+            const highlightedSquares: number[] = findHighlightedSquares(row, col, values, currentPlayer);
             if (highlightedSquares.length !== 0) {
                 newHistory.push({
-                    currentPlayer: currentPlayer,
-                    highlightedSquares: highlightedSquares,
-                    currentBoardValues: values
+                    currentBoardValues: values,
+                    currentPlayer,
+                    highlightedSquares,
                 });
             } else {
-                const newPlayer: string = currentPlayer === 'X' ? 'O': 'X';
-                newHistory.push({ 
-                    currentPlayer: newPlayer, 
-                    highlightedSquares: highlightedSquares,
+                const newPlayer: string = currentPlayer === "X" ? "O" : "X";
+                newHistory.push({
                     currentBoardValues: values,
+                    currentPlayer: newPlayer,
+                    highlightedSquares,
                 });
             }
-            const newMoves: Array<string> = sliceArray(0, state.currentIndex, state.moves) as Array<string>;
+            const newMoves: string[] = sliceArray(0, state.currentIndex, state.moves) as string[];
             newMoves.push(`(${row + 1}, ${col + 1})`);
-            return {history: newHistory, moves: newMoves, currentIndex: state.currentIndex + 1};
+            return {
+                currentIndex: state.currentIndex + 1,
+                history: newHistory,
+                moves: newMoves,
+                movesAreSortedInAscending: state.movesAreSortedInAscending,
+            };
         }
     }
 
-    goToMove(num: number) {
+    public goToMove(num: number) {
         this.setState((prevState: Game.State) => {
-            return { history: prevState.history, moves: prevState.moves, currentIndex: num }
+            return { history: prevState.history, moves: prevState.moves, currentIndex: num };
         });
     }
 
-    sortMoves() {
+    public sortMoves() {
         this.setState((prevState: Game.State) => {
             return {
+                currentIndex: prevState.currentIndex,
                 history: prevState.history,
                 moves: prevState.moves,
                 movesAreSortedInAscending: !prevState.movesAreSortedInAscending,
-                currentIndex: prevState.currentIndex
-            }
+            };
         });
     }
 
-    renderPlayerInfo() {
+    private renderPlayerInfo() {
         const latest: Game.History = this.state.history[this.state.currentIndex];
-        findInArray('', latest.currentBoardValues)
-        if (!findInArray('', latest.currentBoardValues) && latest.highlightedSquares.length === 0) {
+        findInArray("", latest.currentBoardValues);
+        if (!findInArray("", latest.currentBoardValues) && latest.highlightedSquares.length === 0) {
             return (
                 <div className="playerInfo">The game is a draw </div>
             );
@@ -102,22 +125,6 @@ class Game extends Component<{}, Game.State>{
             <div className="playerInfo">{`Winner: ${latest.currentPlayer}`}</div>
         );
     }
+}
 
-    render() {
-        const latest: Game.History = this.state.history[this.state.currentIndex];
-        return (
-            <div className="container" >
-                <div className="row">
-                    { this.renderPlayerInfo() }
-                </div>  
-                <Board updateGameState={this.updateGameState} values={latest.currentBoardValues} highlightedSquares={latest.highlightedSquares}/>
-                <div className="row">
-                    <Actions moves={this.state.moves} goToMove={this.goToMove} movesAreSortedInAscending={this.state.movesAreSortedInAscending} /> 
-                    <Toggle sortMoves={this.sortMoves} isAscending={this.state.movesAreSortedInAscending}/> 
-                </div>  
-            </div>
-        );
-    }
-};
-
-ReactDOM.render(<Game />, document.getElementById('root'));
+ReactDOM.render(<Game />, document.getElementById("root"));

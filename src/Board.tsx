@@ -1,10 +1,10 @@
-import React from "react";
 import { Range } from "immutable";
+import React from "react";
 import "./Board.css";
 import Box from "./Box";
-import { calculateIndex, findInArray } from "./extra"; 
+import { calculateIndex, findInArray } from "./extra";
 
-class Board extends React.Component<Board.Props, any, any> {
+class Board extends React.Component<Board.Props> {
     constructor(props: Board.Props) {
         super(props);
         this.state = {
@@ -27,11 +27,11 @@ class Board extends React.Component<Board.Props, any, any> {
                         {
                             Range(0, 3).map((col: number) => {
                                 const index = calculateIndex(row, col);
-                                return <Box key={index.toString()} 
-                                            isHighlighted={findInArray(index, this.props.highlightedSquares)} 
-                                            row={row} 
-                                            col={col} 
-                                            handleClick={this.props.updateGameState} 
+                                return <Box key={index.toString()}
+                                            isHighlighted={findInArray(index, this.props.highlightedSquares)}
+                                            row={row}
+                                            col={col}
+                                            handleClick={this.props.updateGameState}
                                             currentPlayer={this.props.values[index]}/>;
                             })
                         }

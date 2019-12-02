@@ -7,7 +7,7 @@ const Toggle = (props: Toggle.Props) => {
 
     return (
         <div className="col">
-        <button onClick={handleClick}>{props.isAscending ? 'Ascending' : 'Descending'}</button>
+        <button onClick={handleClick}>{props.isAscending ? "Ascending" : "Descending"}</button>
         </div>
     );
 };
