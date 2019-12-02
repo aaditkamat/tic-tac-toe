@@ -31,7 +31,9 @@ class Game extends Component<{}, Game.State> {
         return (
             <div className="container" >
                 <div className="row">
-                    { this.renderPlayerInfo() }
+                    <div className="col">
+                        { this.renderPlayerInfo() }
+                    </div>
                 </div>
                 <Board updateGameState={this.updateGameState}
                        values={latest.currentBoardValues}
